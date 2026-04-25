@@ -123,6 +123,35 @@ Endpoint rahasia yang dipanggil secara otomatis oleh server Midtrans.
 - **Method:** `POST`
 - **Catatan:** Pastikan endpoint ini dapat diakses secara publik (Gunakan **Ngrok** jika di localhost).
 
+### 4. Mode Registrasi RFID (Pendaftaran Kartu Baru)
+Sistem memiliki fitur khusus untuk mendaftarkan kartu RFID baru ke dalam sistem.
+
+- **Admin UI:** `/admin/rfid/registration`
+- **Logic:** 
+  1. Aktifkan **"Mode Registrasi"** di halaman admin.
+  2. Saat kartu tidak dikenal di-scan di hardware, sistem akan menyimpannya sebagai kartu **'pending'** alih-alih menolak transaksi.
+  3. Admin dapat menghubungkan kartu 'pending' tersebut ke User yang tersedia atau membuat User baru langsung dari halaman yang sama.
+
+- **API Override (Hardware):**
+  Untuk memaksa mode registrasi dari sisi hardware tanpa menunggu toggle admin, tambahkan parameter `mode`:
+  ```json
+  {
+      "rfid_uid": "NEW-UID-123",
+      "mode": "registration"
+  }
+  ```
+
+---
+
+## 🖥️ Fitur Admin & Pendaftaran
+Sistem kini dilengkapi dengan Dashboard Admin untuk memantau aktivitas dan mengelola kartu:
+
+1. **Dashboard Utama (`/`):** Ringkasan statistik (Total User, Saldo, Transaksi Hari Ini) dan riwayat transaksi terbaru.
+2. **Registration Center (`/admin/rfid/registration`):**
+    - **Toggle Mode:** Mengaktifkan/mematikan mode pendaftaran global.
+    - **Quick Add User:** Fitur untuk menambah siswa/user baru secara instan tanpa pindah halaman.
+    - **UID Mapping:** Antrian kartu baru yang tertangkap sistem siap dihubungkan ke identitas siswa.
+
 ---
 
 ## 📡 Integrasi Hardware (ESP32 Example)
