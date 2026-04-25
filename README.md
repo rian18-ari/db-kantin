@@ -103,24 +103,36 @@ Endpoint cerdas yang bisa beralih fungsi antara pembayaran atau registrasi terga
     "mode": "payment" // opsional: 'payment' atau 'registration'
 }
 ```
-- **Response (200 OK - Payment):**
-```json
-{
-    "success": true,
-    "message": "Pembayaran berhasil.",
-    "data": { ... }
-}
-```
-- **Response (201 Created - Registration):**
-```json
-{
-    "success": true,
-    "message": "Kartu baru berhasil disimpan sebagai pending.",
-    "status": "pending"
-}
-```
 
-### 2. Top Up Saldo (Midtrans Snap)
+### 4. Login User (Auth)
+Digunakan oleh aplikasi mobile/frontend untuk mendapatkan token akses.
+
+- **URL:** `/login`
+- **Method:** `POST`
+- **Request Body:**
+```json
+{
+    "email": "siswa@example.com",
+    "password": "password",
+    "device_name": "android_phone"
+}
+```
+- **Response:** Mengembalikan `token` (Sanctum) yang dapat digunakan pada header `Authorization: Bearer <token>`.
+
+### 5. Info Profil (Protected)
+- **URL:** `/user`
+- **Method:** `GET`
+- **Header:** `Authorization: Bearer <token>`
+- **Response:** Data detail user beserta saldo dan daftar kartu RFID.
+
+### 6. Logout (Protected)
+- **URL:** `/logout`
+- **Method:** `POST`
+- **Header:** `Authorization: Bearer <token>`
+
+---
+
+### 7. Top Up Saldo (Midtrans Snap)
 Digunakan oleh Frontend/Mobile untuk membuat transaksi isi ulang.
 
 - **URL:** `/topup`

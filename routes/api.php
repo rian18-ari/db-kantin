@@ -50,13 +50,22 @@ Route::post('/scan-card', ScanCardController::class)
     ->name('card.scan');
 
 /*
+ * Autentikasi User
+ */
+Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login'])
+    ->name('api.login');
+
+/*
  * ─────────────────────────────────────────────────────────
- * Contoh route tambahan (bisa dilindungi dengan auth:sanctum)
+ * Route Terproteksi (Sanctum)
  * ─────────────────────────────────────────────────────────
  */
 Route::middleware('auth:sanctum')->group(function () {
     // Profil pengguna terautentikasi
-    Route::get('/user', function (Request $request) {
-        return new \App\Http\Resources\UserResource($request->user());
-    })->name('user.profile');
+    Route::get('/user', [\App\Http\Controllers\Api\AuthController::class, 'profile'])
+        ->name('user.profile');
+
+    // Logout (Hapus Token)
+    Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout'])
+        ->name('user.logout');
 });
