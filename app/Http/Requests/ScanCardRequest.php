@@ -15,9 +15,11 @@ class ScanCardRequest extends FormRequest
 
     public function rules(): array
     {
+        $isRegistrationMode = \Illuminate\Support\Facades\Cache::get('rfid_registration_mode', false) || $this->input('mode') === 'registration';
+
         return [
             'rfid_uid' => ['required', 'string', 'max:64'],
-            'amount' => ['required', 'numeric', 'min:500'],
+            'amount' => [$isRegistrationMode ? 'nullable' : 'required', 'numeric', 'min:500'],
         ];
     }
 
