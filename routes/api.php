@@ -28,9 +28,23 @@ Route::post('/topup', TopUpController::class)
     ->name('topup.create');
 
 /*
- * Scan kartu RFID untuk pembayaran kantin.
+ * Scan kartu RFID untuk pendaftaran (Pending status).
+ * POST /api/rfid/register
+ */
+Route::post('/rfid/register', \App\Http\Controllers\Api\RfidRegistrationController::class)
+    ->name('api.rfid.register');
+
+/*
+ * Scan kartu RFID untuk pembayaran.
+ * POST /api/rfid/pay
+ */
+Route::post('/rfid/pay', \App\Http\Controllers\Api\RfidPaymentController::class)
+    ->name('api.rfid.pay');
+
+/*
+ * Scan kartu RFID (Smart Endpoint - Mendukung auto-switch mode).
  * POST /api/scan-card
- * Body: { rfid_uid, amount }
+ * Body: { rfid_uid, amount, mode? }
  */
 Route::post('/scan-card', ScanCardController::class)
     ->name('card.scan');

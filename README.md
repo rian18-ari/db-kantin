@@ -65,10 +65,22 @@ Sistem backend berbasis Laravel 13 untuk pengelolaan pembayaran kantin menggunak
 
 Base URL: `http://localhost:8000/api`
 
-### 1. Scan Kartu RFID (Pembayaran)
-Digunakan oleh hardware (ESP32) saat siswa menempelkan kartu di kantin.
+### 1. Registrasi Kartu Baru (Explicit)
+Digunakan secara khusus untuk mendaftarkan kartu baru ke sistem sebagai status `pending`.
 
-- **URL:** `/scan-card`
+- **URL:** `/rfid/register`
+- **Method:** `POST`
+- **Request Body:**
+```json
+{
+    "rfid_uid": "A1B2C3D4"
+}
+```
+
+### 2. Pembayaran Kantin (Explicit)
+Digunakan secara khusus untuk memproses pembayaran. Jika kartu belum aktif, akan mengembalikan error 403.
+
+- **URL:** `/rfid/pay`
 - **Method:** `POST`
 - **Request Body:**
 ```json
@@ -77,18 +89,34 @@ Digunakan oleh hardware (ESP32) saat siswa menempelkan kartu di kantin.
     "amount": 15000
 }
 ```
-- **Response (200 OK):**
+
+### 3. Smart Scan (Hybrid)
+Endpoint cerdas yang bisa beralih fungsi antara pembayaran atau registrasi tergantung pada pengaturan sistem (Mode Registrasi) atau parameter yang dikirim.
+
+- **URL:** `/scan-card`
+- **Method:** `POST`
+- **Request Body:**
+```json
+{
+    "rfid_uid": "A1B2C3D4",
+    "amount": 15000,
+    "mode": "payment" // opsional: 'payment' atau 'registration'
+}
+```
+- **Response (200 OK - Payment):**
 ```json
 {
     "success": true,
     "message": "Pembayaran berhasil.",
-    "data": {
-        "id": "uuid",
-        "type": "payment",
-        "amount": 15000,
-        "status": "success",
-        "created_at": "..."
-    }
+    "data": { ... }
+}
+```
+- **Response (201 Created - Registration):**
+```json
+{
+    "success": true,
+    "message": "Kartu baru berhasil disimpan sebagai pending.",
+    "status": "pending"
 }
 ```
 
